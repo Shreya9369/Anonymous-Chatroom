@@ -1,88 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anonymous Chatroom</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="chat-app">
-    <!-- Nickname Modal -->
+
     <div id="nickname-modal" class="modal" aria-hidden="true">
       <div class="modal-content">
-        <h2>Choose your nickname</h2>
-        <p>Optional: Set a nickname to use in chat.</p>
+        <h2>Choose a nickname</h2>
         <form id="nickname-form">
-          <input type="text" id="nickname-input" maxlength="20" placeholder="Enter nickname" />
+          <input type="text" id="nickname-input" maxlength="20" placeholder="Enter nickname">
           <button type="submit" class="btn">Join Chat</button>
         </form>
       </div>
     </div>
 
-    <!-- Chat Rules Modal -->
     <div id="rules-modal" class="modal" aria-hidden="true">
       <div class="modal-content">
-        <h2>Chatroom Rules</h2>
+        <h2>Chat Rules</h2>
         <ul>
-          <li>Be kind and respectful.</li>
-          <li>No harassment or personal attacks.</li>
-          <li>Keep chat appropriate for all ages.</li>
-          <li>No spam or ads.</li>
-          <li>Don't share personal info.</li>
+          <li>Be kind and respectful</li>
+          <li>No harassment or personal attacks</li>
+          <li>Keep chat appropriate</li>
+          <li>No spam or ads</li>
+          <li>Don't share personal info</li>
         </ul>
-        <button id="close-rules-btn" class="btn">Close</button>
+        <button id="close-rules-btn" class="btn">Close ❌</button>
       </div>
     </div>
 
-    <!-- Header -->
     <header class="chat-header">
       <h1>Anonymous Chatroom</h1>
-      <p>Chat freely and stay anonymous</p>
       <div class="header-buttons">
         <button id="toggle-theme" title="Toggle theme">🌙</button>
         <button id="open-rules-btn" title="Chat rules">📜 Rules</button>
       </div>
     </header>
 
-    <!-- Main Chat Area -->
     <main class="chat-main">
-      <!-- Sidebar Info -->
       <aside class="chat-sidebar">
         <h2>Welcome!</h2>
-        <p>No sign-up needed. Start chatting anonymously.</p>
         <p><strong>Users online:</strong> <span id="user-count">1</span></p>
         <p><strong>Topic:</strong> General Chat</p>
       </aside>
 
-      <!-- Chat Messages -->
       <section class="chat-area">
         <ul id="chat-messages" class="chat-messages"></ul>
         <div id="typing-indicator" class="typing-indicator"></div>
-
-        <!-- Message Form -->
         <form id="chat-form" class="chat-form">
-          <input id="msg" type="text" placeholder="Type a message..." required />
+          <input id="msg" type="text" placeholder="Type a message..." required>
           <button type="submit" class="btn">Send</button>
-          <button type="button" id="emoji-btn" class="emoji-btn">😀</button>
         </form>
-        <small class="helper-text">Press Enter or click Send</small>
       </section>
     </main>
 
-    <!-- Footer -->
     <footer class="chat-footer">
       <small>© 2024 Anonymous Chatroom</small>
     </footer>
+
   </div>
 
-  <!-- Server Status -->
-  <div id="server-status" style="text-align:center; margin-top: 10px; font-weight: bold;"></div>
+  <div id="server-status" class="server-status"></div>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-<script>
-  const socket = io("http://10.5.52.20:5000");
-</script>
   <script src="script.js"></script>
 </body>
+
 </html>
