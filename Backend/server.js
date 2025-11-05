@@ -4,39 +4,17 @@ const { Server } = require("socket.io");
 const path = require("path");
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } }); 
 
 app.use(express.static(path.join(__dirname, "../frontend")));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/index.html"));
-});
-
-app.get("/ping", (req, res) => {
-  res.json({ message: "Server is working fine!" });
-});
-
-const server = http.createServer(app);
-
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5500",
-    methods: ["GET", "POST"]
-  }
-});
-
 io.on("connection", (socket) => {
-  console.log("🟢 A user connected");
+  console.log("🟢 User connected");
 
-  socket.on("chat message", (data) => {
-    io.emit("chat message", data);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("🔴 A user disconnected");
-  });
+  socket.on("chat message", (data) => io.emit("chat message", data));
+  
+  socket.on("disconnect", () => console.log("🔴 User disconnected"));
 });
 
-const PORT = 5000;
-server.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-});
+server.listen(5000, () => console.log("✅ Server running on http://localhost:5000"));
