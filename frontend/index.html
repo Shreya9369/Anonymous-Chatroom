@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +14,13 @@
       <div class="modal-content">
         <h2>Choose a nickname</h2>
         <form id="nickname-form">
-          <input type="text" id="nickname-input" maxlength="20" placeholder="Enter nickname">
+          <input
+            type="text"
+            id="nickname-input"
+            maxlength="20"
+            placeholder="Enter nickname"
+            autocomplete="off"
+            aria-label="Enter nickname">
           <button type="submit" class="btn">Join Chat</button>
         </form>
       </div>
@@ -46,7 +51,7 @@
     <main class="chat-main">
       <aside class="chat-sidebar">
         <h2>Welcome!</h2>
-        <p><strong>Users online:</strong> <span id="user-count">1</span></p>
+        <p><strong>Users online:</strong> <span id="user-count">0</span></p>
         <p><strong>Topic:</strong> General Chat</p>
       </aside>
 
@@ -54,7 +59,14 @@
         <ul id="chat-messages" class="chat-messages"></ul>
         <div id="typing-indicator" class="typing-indicator"></div>
         <form id="chat-form" class="chat-form">
-          <input id="msg" type="text" placeholder="Type a message..." required>
+          <input
+            id="msg"
+            type="text"
+            placeholder="Type a message..."
+            required
+            maxlength="200"
+            autocomplete="off"
+            aria-label="Type a message">
           <button type="submit" class="btn">Send</button>
         </form>
       </section>
@@ -66,10 +78,8 @@
 
   </div>
 
-  <div id="server-status" class="server-status"></div>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="script.js"></script>
 </body>
-
 </html>

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
   const chatBox = document.getElementById('chat-messages');
   const chatForm = document.getElementById('chat-form');
   const msgInput = document.getElementById('msg');
@@ -9,51 +8,114 @@ document.addEventListener('DOMContentLoaded', () => {
   const rulesModal = document.getElementById('rules-modal');
   const themeBtn = document.getElementById('toggle-theme');
   const userCount = document.getElementById('user-count');
-  const serverStatus = document.getElementById('server-status');
+  const typingIndicator = document.getElementById('typing-indicator');
+  const openRulesBtn = document.getElementById('open-rules-btn');
+  const closeRulesBtn = document.getElementById('close-rules-btn');
 
   let nickname = 'Anonymous';
-  let dark = false;
+  let isDark = false;
 
-  fetch('http://localhost:5000/ping').catch(() => {});
-  const socket = io("http://localhost:5000");
+  themeBtn.textContent = '🌙';
 
-  const addMsg = (text, type='user', name='Anonymous') => {
+  const socket = io('http://localhost:5000');
+
+  const addMsg = (text, type = 'user', name = 'Anonymous', time = null) => {
     const li = document.createElement('li');
     li.className = `chat-message ${type}`;
-    if(type === 'user') li.innerHTML = `<div class="nickname">${name}</div>`;
-    li.innerHTML += `<div>${text}</div><div class="timestamp">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
+
+    if (type === 'user') {
+      li.innerHTML = `<div class="nickname">${name}</div>`;
+    }
+
+    const displayTime =
+      time ||
+      new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+    li.innerHTML += `
+      <div>${text}</div>
+      <div class="timestamp">${displayTime}</div>
+    `;
+
     chatBox.appendChild(li);
     chatBox.scrollTop = chatBox.scrollHeight;
   };
 
-  nickForm.addEventListener('submit', e => {
+  nickForm.addEventListener('submit', (e) => {
     e.preventDefault();
+
     nickname = nickInput.value.trim() || 'Anonymous';
     nickModal.classList.remove('active');
     addMsg(`👋 Welcome, ${nickname}!`, 'system');
+
+    socket.emit('user joined', nickname);
   });
+
   nickModal.classList.add('active');
 
-  chatForm.addEventListener('submit', e => {
+  chatForm.addEventListener('submit', (e) => {
     e.preventDefault();
+
     const text = msgInput.value.trim();
-    if(!text) return;
+    if (!text) return;
+
     addMsg(text, 'user', nickname);
     socket.emit('chat message', { text, nickname });
+
     msgInput.value = '';
+    typingIndicator.textContent = '';
   });
 
-  socket.on('chat message', data => {
-    if(data.nickname !== nickname) addMsg(data.text, 'user', data.nickname);
+  socket.on('chat message', (data) => {
+    if (data.nickname !== nickname) {
+      addMsg(data.text, 'user', data.nickname, data.time);
+    }
   });
 
-  document.getElementById('open-rules-btn').onclick = () => rulesModal.classList.add('active');
-  document.getElementById('close-rules-btn').onclick = () => rulesModal.classList.remove('active');
+  socket.on('chat history', (messages) => {
+    chatBox.innerHTML = '';
 
-  themeBtn.onclick = () => {
-    document.body.classList.toggle('light-theme');
-    dark = !dark;
-    themeBtn.textContent = dark ? '🌞' : '🌙';
+    messages.forEach((msg) => {
+      addMsg(msg.text_message, 'user', msg.nickname, msg.time_sent);
+    });
+  });
+
+  socket.on('user count', (count) => {
+    userCount.textContent = count;
+  });
+
+  socket.on('typing', (name) => {
+    if (name !== nickname) {
+      typingIndicator.textContent = `${name} is typing...`;
+
+      clearTimeout(window.typingTimeout);
+      window.typingTimeout = setTimeout(() => {
+        typingIndicator.textContent = '';
+      }, 1000);
+    }
+  });
+
+  socket.on('system message', (message) => {
+    addMsg(message, 'system');
+  });
+
+  msgInput.addEventListener('input', () => {
+    socket.emit('typing', nickname);
+  });
+
+  openRulesBtn.onclick = () => {
+    rulesModal.classList.add('active');
   };
 
+  closeRulesBtn.onclick = () => {
+    rulesModal.classList.remove('active');
+  };
+
+  themeBtn.onclick = () => {
+    document.body.classList.toggle('dark-theme');
+    isDark = !isDark;
+    themeBtn.textContent = isDark ? '🌞' : '🌙';
+  };
 });
