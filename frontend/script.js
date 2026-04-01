@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeBtn = document.getElementById('toggle-theme');
   const userCount = document.getElementById('user-count');
   const openRulesBtn = document.getElementById('open-rules-btn');
+  
   const closeRulesBtn = document.getElementById('close-rules-btn');
 
   let nickname = 'Anonymous';
