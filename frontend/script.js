@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const rulesModal = document.getElementById('rules-modal');
   const themeBtn = document.getElementById('toggle-theme');
   const userCount = document.getElementById('user-count');
-  const typingIndicator = document.getElementById('typing-indicator');
   const openRulesBtn = document.getElementById('open-rules-btn');
   const closeRulesBtn = document.getElementById('close-rules-btn');
 
@@ -86,16 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     userCount.textContent = count;
   });
 
-  socket.on('typing', (name) => {
-    if (name !== nickname) {
-      typingIndicator.textContent = `${name} is typing...`;
-
-      clearTimeout(window.typingTimeout);
-      window.typingTimeout = setTimeout(() => {
-        typingIndicator.textContent = '';
-      }, 1000);
-    }
-  });
+ 
 
   socket.on('system message', (message) => {
     addMsg(message, 'system');
